@@ -50,9 +50,9 @@ st.title("FitnessGPT — Personalized Workout Planner")
 st.markdown("Enter your fitness details below to generate a personalized workout plan.")
 
 # Check API key
-if "GROQ_API_KEY" not in os.environ:
-    st.error("No GROQ_API_KEY found! Add it in Space Secrets and restart the Space.")
-    st.stop()
+# if "GROQ_API_KEY" not in os.environ:
+#     st.error("No GROQ_API_KEY found! Add it in Space Secrets and restart the Space.")
+#     st.stop()
 
 if not GROQ_AVAILABLE:
     st.error("Groq SDK not installed. Add `groq` to your requirements.txt.")
