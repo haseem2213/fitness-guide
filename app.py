@@ -30,7 +30,7 @@ def load_groq_client():
 # =====================
 # Generate workout plan
 def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
-    def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
+    
     if client:
         # Real API call
         try:
