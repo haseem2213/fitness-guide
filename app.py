@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 
 # Try to import Groq
@@ -19,8 +20,8 @@ progressions. Be friendly and motivational.
 # =====================
 # Load Groq client
 def load_groq_client():
-    api_key = "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"  # Hardcoded for testing
-    if not api_key or not GROQ_AVAILABLE:
+    api_key = os.environ.get("GROQ_API_KEY")  # ✅ read from environment variables
+    if not api_key:
         return None
     try:
         return Groq(api_key=api_key)
@@ -30,29 +31,27 @@ def load_groq_client():
 # =====================
 # Generate workout plan
 def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
-    
     if client:
-        # Real API call
         try:
-            messages = [{"role":"system","content":SYSTEM_PROMPT},
-                        {"role":"user","content":user_text}]
+            messages = [
+                {"role":"system","content":SYSTEM_PROMPT},
+                {"role":"user","content":user_text}
+            ]
             resp = client.chat.completions.create(
                 model=model_name,
                 messages=messages,
                 temperature=0.35,
                 max_tokens=800
             )
-            # ✅ Fix: use .content instead of ["content"]
-            return resp.choices[0].message.content
+            return resp.choices[0].message.content  # ✅ fixed for new SDK
         except Exception as e:
             return f"Error generating plan: {e}"
     else:
-        # Mock fallback
+        # Fallback demo plan
         return f"**Demo Workout Plan for:** {user_text}\n\n" \
                "Day 1: Push-ups, Squats, Plank, Dumbbell curls\n" \
                "Day 2: Lunges, Shoulder presses, Crunches, Stretching\n" \
                "\n*Increase reps or weight as you get stronger!*"
-
 
 # =====================
 # Streamlit UI
@@ -65,7 +64,7 @@ if not GROQ_AVAILABLE:
 
 client = load_groq_client()
 if not client and GROQ_AVAILABLE:
-    st.warning("Cannot initialize Groq client. The app will use a demo plan.")
+    st.warning("Cannot initialize Groq client. Make sure GROQ_API_KEY is set in Secrets/Environment variables. Using demo plan.")
 
 user_text = st.text_area(
     "Your details (weight, height, goals, equipment, etc.)",
@@ -81,4 +80,5 @@ if st.button("Generate Workout Plan"):
             plan = generate_workout_plan(client, user_text)
         st.subheader("Your Workout Plan")
         st.markdown(plan.replace("\n","\n\n"))
+
 
