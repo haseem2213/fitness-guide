@@ -1,5 +1,3 @@
-# app.py
-import os
 import streamlit as st
 
 # Try to import Groq
@@ -9,9 +7,8 @@ try:
 except ImportError:
     GROQ_AVAILABLE = False
 
-# ----------------------------
-# Config
-# ----------------------------
+# =====================
+# Settings
 DEFAULT_MODEL = "llama-3.1-8b-instant"
 SYSTEM_PROMPT = """
 You are FitnessGPT — an expert personal fitness coach. Generate short, actionable, personalized workout plans
@@ -19,51 +16,54 @@ based on the user's details (weight, height, goals, equipment). Include sets/rep
 progressions. Be friendly and motivational.
 """
 
-# ----------------------------
-# Utilities
-# ----------------------------
+# =====================
+# Load Groq client
 def load_groq_client():
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = "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"  # Hardcoded for testing
     if not api_key or not GROQ_AVAILABLE:
         return None
-    return Groq(api_key=api_key)
-
-def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
-    messages = [{"role":"system","content":SYSTEM_PROMPT},
-                {"role":"user","content":user_text}]
     try:
-        resp = client.chat.completions.create(
-            model=model_name,
-            messages=messages,
-            temperature=0.35,
-            max_tokens=800
-        )
-        return resp.choices[0].message["content"]
-    except Exception as e:
-        return f"Error generating plan: {e}"
+        return Groq(api_key=api_key)
+    except Exception:
+        return None
 
-# ----------------------------
+# =====================
+# Generate workout plan
+def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
+    if client:
+        # Real API call
+        try:
+            messages = [{"role":"system","content":SYSTEM_PROMPT},
+                        {"role":"user","content":user_text}]
+            resp = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=0.35,
+                max_tokens=800
+            )
+            return resp.choices[0].message["content"]
+        except Exception as e:
+            return f"Error generating plan: {e}"
+    else:
+        # Mock fallback
+        return f"**Demo Workout Plan for:** {user_text}\n\n" \
+               "Day 1: Push-ups, Squats, Plank, Dumbbell curls\n" \
+               "Day 2: Lunges, Shoulder presses, Crunches, Stretching\n" \
+               "\n*Increase reps or weight as you get stronger!*"
+
+# =====================
 # Streamlit UI
-# ----------------------------
 st.set_page_config(page_title="FitnessGPT", page_icon="🏋️", layout="centered")
 st.title("FitnessGPT — Personalized Workout Planner")
 st.markdown("Enter your fitness details below to generate a personalized workout plan.")
 
-# Check API key
-# if "GROQ_API_KEY" not in os.environ:
-#     st.error("No GROQ_API_KEY found! Add it in Space Secrets and restart the Space.")
-#     st.stop()
-
 if not GROQ_AVAILABLE:
-    st.error("Groq SDK not installed. Add `groq` to your requirements.txt.")
-    st.stop()
+    st.warning("Groq SDK not installed. The app will use a mock demo plan.")
 
 client = load_groq_client()
-if not client:
-    st.error("Cannot initialize Groq client. Check your API key and SDK.")
-    st.stop()
+if not client and GROQ_AVAILABLE:
+    st.warning("Cannot initialize Groq client. The app will use a demo plan.")
 
-# User input
 user_text = st.text_area(
     "Your details (weight, height, goals, equipment, etc.)",
     height=150,
