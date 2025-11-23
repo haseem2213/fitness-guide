@@ -3,3 +3,6 @@ groq
 soundfile
 gTTS
 python-dotenv
+whisper
+torch
+
