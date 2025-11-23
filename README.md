@@ -1,36 +1,29 @@
-# FitnessGPT — Streamlit frontend for Groq-powered personalized workout plans
+---
+title: Fitness AI Coach
+emoji: 🏋️
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: "1.33.0"
+app_file: app.py
+pinned: false
+---
 
-## Overview
-This Streamlit app collects user details (text or short audio), sends them to a Groq chat model (Llama-3.1-8B instant recommended), and returns a structured personalized workout plan. The app also offers simple text-to-speech playback.
+# 🏋️ Fitness AI Coach — Powered by Groq + Llama 3.1 8B
 
-## Files
-- `app.py` - Streamlit application
-- `requirements.txt` - Python dependencies
+This app generates personalized workout plans using the **Groq API** and the **Llama 3.1 8B model**.
 
-## Deploy to Hugging Face Spaces
-1. Create a new Space (https://huggingface.co/spaces)  
-   - Choose **Streamlit** as the SDK.  
-   - Make it Public or Private.
+### ✅ Features
+- Enter fitness goals, weight, exercise type, calories, etc.
+- AI generates a personalized plan
+- Streamlit UI
+- Runs fast on Groq inference
 
-2. Add repository files:
-   - `app.py`, `requirements.txt`, `README.md`
+### 🔐 Add Your API Key
+Go to:
 
-3. Add Secrets (Space Settings → Secrets)
-   - `GROQ_API_KEY` = your Groq API key
+**Settings → Variables and Secrets**
 
-4. Push files:
-git clone https://huggingface.co/spaces/
-<your-username>/<space-name>
-cp app.py requirements.txt README.md <space-name>/
-cd <space-name>
-git add .
-git commit -m "Initial commit"
-git push
+Add:
 
-5. The Space will build and then be available online.  
-Check build logs in the Space UI if anything fails.
 
-## Tips & Upgrades
-- For better STT, use a hosted Whisper API or a cloud STT (OpenAI/Google) instead of local Whisper in the Space.  
-- For higher-quality TTS, add ElevenLabs or Google TTS and store the API key in your Space Secrets.  
-- To persist user plans long-term, integrate a small DB (Supabase or simple SQLite) and secure authentication.
