@@ -30,6 +30,7 @@ def load_groq_client():
 # =====================
 # Generate workout plan
 def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
+    def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
     if client:
         # Real API call
         try:
@@ -41,7 +42,8 @@ def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
                 temperature=0.35,
                 max_tokens=800
             )
-            return resp.choices[0].message["content"]
+            # ✅ Fix: use .content instead of ["content"]
+            return resp.choices[0].message.content
         except Exception as e:
             return f"Error generating plan: {e}"
     else:
@@ -50,6 +52,7 @@ def generate_workout_plan(client, user_text, model_name=DEFAULT_MODEL):
                "Day 1: Push-ups, Squats, Plank, Dumbbell curls\n" \
                "Day 2: Lunges, Shoulder presses, Crunches, Stretching\n" \
                "\n*Increase reps or weight as you get stronger!*"
+
 
 # =====================
 # Streamlit UI
